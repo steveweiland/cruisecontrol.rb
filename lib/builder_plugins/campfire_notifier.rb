@@ -16,13 +16,13 @@ class CampfireNotifier
   attr_accessor :pass
 
   def initialize(project = nil)
-    @account = ''
-    @use_ssl = true
+    @account = Configuration.campfire_notifier_account
+    @use_ssl = Configuration.campfire_notifier_use_ssl
     @room = ''
-    @user = ''
-    @pass = ''
+    @user = Configuration.campfire_notifier_user
+    @pass = Configuration.campfire_notifier_pass
   end
-
+  
   def build_finished(build)
     return if not build.failed? or @account.empty? or @room.empty? or @user.empty? or @pass.empty?
     say! build, "#{build.project.name} build #{build.label} failed", "The build failed."
@@ -37,7 +37,6 @@ class CampfireNotifier
 
   def say!( build, subject, message )
     msg = "[CruiseControl] #{subject}, #{build.url}"
-    failures_and_errors = BuildLogParser.new(build.output).failures_and_errors.map { |e| formatted_error(e) }
     buf = report build, subject, message
     begin
       the_room.speak msg
@@ -61,6 +60,7 @@ class CampfireNotifier
 
   ## baaah
   def report( build, subject, message )
+    failures_and_errors = BuildLogParser.new(build.output).failures_and_errors.map { |e| formatted_error(e) }
     buf = ''
     if Configuration.dashboard_url
       buf << "#{message}\n"
