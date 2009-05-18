@@ -32,6 +32,13 @@
 #
 # For further details about configuration of outgoing email, see Ruby On Rails documentation for ActionMailer::Base.
 
+# CAMPFIRE NOTIFICATION
+# ------------------
+# Configuration.campfire_notifier_account = ''
+# Configuration.campfire_notifier_use_ssl = true
+# Configuration.campfire_notifier_user = ''
+# Configuration.campfire_notifier_pass = ''
+
 # Other site-wide options are available through Configuration class:
 
 # Change how often CC.rb pings Subversion for new requests. Default is 10.seconds, which should be OK for a local

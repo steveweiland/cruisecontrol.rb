@@ -8,4 +8,4 @@ public/builds
 *.iws
 *.ipr
 *.iml
-./idea
+.idea
