@@ -1,8 +1,10 @@
 #
-# todo: put a doc here
-# todo: a test
-# todo: fix smell of report
-# todo: add dep for tinder
+# CampFire Notifier builder_plugin
+#
+#   req: tinder 
+#   see: site_config.rb and cruise_config.rb
+#
+#   todo: fix smell of report
 #
 
 require "tinder"
@@ -14,6 +16,8 @@ class CampfireNotifier
   attr_accessor :room
   attr_accessor :user
   attr_accessor :pass
+
+  attr_writer :the_room
 
   def initialize(project = nil)
     @account = Configuration.campfire_notifier_account
@@ -33,6 +37,16 @@ class CampfireNotifier
     say! build, "#{build.project.name} build #{build.label} fixed", "The build has been fixed."
   end
 
+  def the_room
+    @the_room ||= begin
+      opts = {}
+      opts[:ssl] = @use_ssl ? true : false
+      campfire = Tinder::Campfire.new(@account, opts)
+      campfire.login(@user, @pass)
+      campfire.find_room_by_name(@room)
+    end
+  end
+
   private
 
   def say!( build, subject, message )
@@ -45,16 +59,6 @@ class CampfireNotifier
       CruiseControl::Log.event( "Said #{msg} on campfire", :debug )
     rescue => e
       CruiseControl::Log.event( "Error writting to campfire #{e.message}", :error )
-    end
-  end
-
-  def the_room
-    @the_room ||= begin
-      opts = {}
-      opts[:ssl] = @use_ssl ? true : false
-      campfire = Tinder::Campfire.new(@account, opts)
-      campfire.login(@user, @pass)
-      campfire.find_room_by_name(@room)
     end
   end
 
