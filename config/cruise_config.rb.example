@@ -8,6 +8,13 @@ Project.configure do |project|
   # Set email 'from' field to john@doe.com:
   # project.email_notifier.from = 'john@doe.com'
 
+  ## campfie config
+  #project.campfire_notifier.account = ''
+  #project.campfire_notifier.use_ssl = true
+  #project.campfire_notifier.room = ''
+  #project.campfire_notifier.user = ''
+  #project.campfire_notifier.pass = ''
+
   # Build the project by invoking rake task 'custom'
   # project.rake_task = 'custom'
 
