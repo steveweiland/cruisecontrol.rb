@@ -7,7 +7,7 @@ class BuildDeployer
   def build_finished(build)
 
     output = `cd #{build.project.local_checkout}/script && ./deploy`
-    CruiseControl::Log.event("***** #{output}")
+    CruiseControl::Log.event("***** #{output}")  # output is always empty... Why?
 
   end
 
