@@ -1,10 +1,8 @@
 #
-# CampFire Notifier builder_plugin
-#
-#   req: tinder 
-#   see: site_config.rb and cruise_config.rb
-#
-#   todo: fix smell of report
+# todo: put a doc here
+# todo: a test
+# todo: fix smell of report
+# todo: add dep for tinder
 #
 
 require "tinder"
@@ -16,8 +14,6 @@ class CampfireNotifier
   attr_accessor :room
   attr_accessor :user
   attr_accessor :pass
-
-  attr_writer :the_room
 
   def initialize(project = nil)
     @account = Configuration.campfire_notifier_account
@@ -37,6 +33,21 @@ class CampfireNotifier
     say! build, "#{build.project.name} build #{build.label} fixed", "The build has been fixed."
   end
 
+  private
+
+  def say!( build, subject, message )
+    begin
+      msg = "[CruiseControl] #{subject}, #{build.url}"
+      buf = report build, subject, message
+      the_room.speak msg
+      the_room.paste buf
+      the_room.leave
+      CruiseControl::Log.event( "Said #{msg} on campfire", :debug )
+    rescue => e
+      CruiseControl::Log.event( "Error writting to campfire #{e.message}", :error )
+    end
+  end
+
   def the_room
     @the_room ||= begin
       opts = {}
@@ -44,21 +55,6 @@ class CampfireNotifier
       campfire = Tinder::Campfire.new(@account, opts)
       campfire.login(@user, @pass)
       campfire.find_room_by_name(@room)
-    end
-  end
-
-  private
-
-  def say!( build, subject, message )
-    msg = "[CruiseControl] #{subject}, #{build.url}"
-    buf = report build, subject, message
-    begin
-      the_room.speak msg
-      the_room.paste buf
-      the_room.leave
-      CruiseControl::Log.event( "Said #{msg} on campfire", :debug )
-    rescue => e
-      CruiseControl::Log.event( "Error writting to campfire #{e.message}", :error )
     end
   end
 
