@@ -7,7 +7,12 @@ class BuildDeployer
   def build_finished(build)
 
     output = `cd #{build.project.local_checkout}/script && ./deploy`
-    CruiseControl::Log.event("***** #{output}")  # output is always empty... Why?
+
+    File.open("/tmp/deploy-out", "r") do |infile|
+      while (line = infile.gets)
+        CruiseControl::Log.event( line )
+      end
+    end
 
   end
 
